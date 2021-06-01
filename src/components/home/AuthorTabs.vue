@@ -27,23 +27,24 @@
             <v-col
               v-for="book in compBooks"
               :key="book._id"
+              xl="2"
               lg="3"
               md="4"
               sm="6"
               cols="12"
             >
               <v-card
-                height="470"
-                width="320"
+                height="420"
+                width="280"
                 class="ma-5 d-flex flex-column teal--text"
                 color="grey darken-4"
                 :to="{ name: 'Book', params: { id: book._id } }"
                 hover
               >
-                <v-img height="250" :src="getImage(book.img_name)"></v-img>
+                <v-img height="200" :src="getImage(book.img_name)"></v-img>
                 <v-card-title class="card-title">{{ book.title }}</v-card-title>
                 <v-card-subtitle class="teal--text">
-                  {{ book.description | truncate(125, '...') }}
+                  {{ book.description | truncate(35, '...') }}
                 </v-card-subtitle>
                 <v-divider></v-divider>
                 <v-card-actions>
@@ -109,7 +110,7 @@ export default Vue.extend({
     deleteBook(id: string): void {
       this.deleteABook({ _id: id }).then(() => {
         this.snackbar = true;
-        this.snackbarColor = 'teal darken-3';
+        this.snackbarColor = 'teal darken-2';
         this.snackbarText = 'Successfully deleted';
       });
     },
@@ -119,7 +120,7 @@ export default Vue.extend({
     compAuthors(): string[] {
       return [
         ...new Set(this.books.map((book: Book) => book.author)),
-      ] as string[];
+      ].sort() as string[];
     },
     compBooks(): Book[] {
       let books = this.books;

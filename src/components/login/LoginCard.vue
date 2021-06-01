@@ -3,7 +3,7 @@
     <v-overlay v-if="overlay">
       <v-progress-circular indeterminate size="46"></v-progress-circular>
     </v-overlay>
-    <v-card class="mx-auto mt-16" width="500" color="teal darken-4">
+    <v-card class="mx-auto mt-16" width="500" color="teal darken-2">
       <v-card-title class="black--text"> Login </v-card-title>
       <v-container>
         <v-form value>

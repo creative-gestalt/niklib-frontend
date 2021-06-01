@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar id="nav" color="teal darken-4" app dark>
+    <v-app-bar id="nav" color="teal darken-2" app dark>
       <v-toolbar-title class="black--text">Nick's Library</v-toolbar-title>
       <v-spacer></v-spacer>
       <div v-if="currentUser">

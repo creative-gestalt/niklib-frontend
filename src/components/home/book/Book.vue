@@ -4,7 +4,7 @@
       <v-row class="ma-auto">
         <v-btn
           class="ma-auto black--text"
-          color="teal darken-4"
+          color="teal darken-2"
           @click="navigate()"
           dark
         >
@@ -23,7 +23,7 @@
           Written by {{ book.author }}
         </v-card-subtitle>
         <v-card-actions>
-          <v-btn class="black--text" color="teal darken-4" :href="downloadURL"
+          <v-btn class="black--text" color="teal darken-2" :href="downloadURL"
             >Open</v-btn
           >
         </v-card-actions>

@@ -113,7 +113,7 @@ export default Vue.extend({
             this.closeDialog();
             this.$emit('openSnackbar', {
               text: 'Book Added Successfully',
-              color: 'teal darken-3',
+              color: 'teal darken-2',
               show: true,
             });
           }, 1000);
