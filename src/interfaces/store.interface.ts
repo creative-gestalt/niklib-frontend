@@ -9,9 +9,10 @@ export interface Book {
 }
 
 export interface State {
-  books: Book[];
+  books: Record<string, Book[]>[];
   email: string;
   password: string;
   currentUser: Record<string, unknown>;
   token: string;
+  currentTab: number;
 }

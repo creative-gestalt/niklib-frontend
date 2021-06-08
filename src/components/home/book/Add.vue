@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>Add Book</v-card-title>
       <v-container>
-        <v-form ref="addForm" v-model="valid" lazy-validation>
+        <v-form ref="addForm" v-model="valid">
           <v-text-field
             type="text"
             id="title"
@@ -39,13 +39,13 @@
           </v-text-field>
           <v-file-input
             v-model="img"
-            :rules="noEmptyRule"
+            :rules="fileRule"
             label="Book Cover Image"
             required
           ></v-file-input>
           <v-file-input
             v-model="file"
-            :rules="noEmptyRule"
+            :rules="fileRule"
             label="Book File"
             required
           ></v-file-input>
@@ -80,6 +80,7 @@ export default Vue.extend({
     file: null as unknown as File,
     img: null as unknown as File,
     noEmptyRule: [(v: string) => !!v || 'This field is required'],
+    fileRule: [] as unknown[],
   }),
   methods: {
     ...mapActions({ addBookToServer: 'addBookToServer' }),
@@ -129,6 +130,7 @@ export default Vue.extend({
       this.resetValidation();
     },
     validate(): void {
+      this.fileRule = [(v: string) => !!v || 'This field is required'];
       this.valid = (
         this.$refs.addForm as Vue & {
           validate: () => boolean;
@@ -148,6 +150,7 @@ export default Vue.extend({
       this.date_posted = '';
       this.file = null as unknown as File;
       this.img = null as unknown as File;
+      this.fileRule = [];
     },
   },
   computed: {

@@ -14,6 +14,7 @@ const initialState = () => ({
   password: '',
   currentUser: {},
   token: '',
+  currentTab: 0,
 });
 
 export default new Vuex.Store({
@@ -24,26 +25,51 @@ export default new Vuex.Store({
       state.password = payload.password;
     },
     LOGOUT(state: {
-      [x: string]: string | string[] | Record<string, unknown>;
+      [x: string]: string | string[] | Record<string, Book[]> | number;
     }) {
       const newState: {
-        [x: string]: string | string[] | Record<string, unknown>;
+        [x: string]: string | string[] | Record<string, Book[]> | number;
       } = initialState();
       Object.keys(newState).forEach((key) => {
         state[key] = newState[key];
       });
     },
-    SET_BOOKS(state: State, payload: Book[]): void {
+    SET_BOOKS(state: State, payload: Record<string, Book[]>[]): void {
       state.books = payload;
     },
+    SET_AUTHOR_BOOKS(
+      state: State,
+      payload: Record<string, Book[] | string>
+    ): void {
+      state.books.map((author, index) => {
+        if (Object.keys(author)[0] === payload.author) {
+          if (payload.newList.length) {
+            author[payload.author] = payload.newList as Book[];
+          } else {
+            state.currentTab = 0;
+            state.books.splice(index, 1);
+          }
+        }
+      });
+    },
     ADD_BOOK(state: State, payload: Book): void {
-      state.books.push(payload);
+      let updated = false;
+      state.books.filter((author, index) => {
+        if (Object.keys(author)[0] === payload.author) {
+          author[payload.author].push(payload);
+          updated = true;
+        }
+      });
+      if (!updated) state.books.push({ [payload.author]: [payload] });
     },
     SET_CURRENT_USER(state: State, payload: Record<string, unknown>): void {
       state.currentUser = payload;
     },
     SET_TOKEN(state: State, payload: string): void {
       state.token = payload;
+    },
+    UPDATE_CURRENT_TAB(state: State, payload: number): void {
+      state.currentTab = payload;
     },
   },
   actions: {
@@ -154,10 +180,22 @@ export default new Vuex.Store({
       await axios
         .delete(`${server.baseURL}/niklib/delete?bookID=${payload._id}`)
         .then((data) => {
-          const newList = state.books.filter(
-            (book: Book) => book._id != payload._id
-          );
-          commit('SET_BOOKS', newList);
+          let currentAuthor = '';
+          const newList = [] as Book[];
+          state.books.map((author: Record<string, Book[]>) => {
+            currentAuthor = Object.keys(author)[0];
+            if (currentAuthor === payload.author) {
+              for (const books of Object.values(author)) {
+                for (const book of books) {
+                  if (book._id != payload._id) newList.push(book);
+                }
+              }
+            }
+          });
+          commit('SET_AUTHOR_BOOKS', {
+            author: currentAuthor,
+            newList: newList,
+          });
         });
     },
     async deleteFile({ commit, state }, payload: string): Promise<void> {
@@ -167,10 +205,11 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    getBooks: (state: State): Book[] => state.books,
-    getCurrentUser: (state: State): Record<string, unknown> =>
-      state.currentUser,
+    getBooks: (state: State): Record<string, Book[]>[] => state.books,
+    getCurrentUser: (state: State): boolean =>
+      Object.keys(state.currentUser).length !== 0,
     getToken: (state: State): string => state.token,
+    getCurrentTab: (state: State): number => state.currentTab,
   },
   modules: {},
   plugins: [
