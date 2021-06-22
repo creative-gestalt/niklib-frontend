@@ -3,18 +3,19 @@ import Vuex from 'vuex';
 import axios from 'axios';
 import { server } from '@/utils/helper';
 import { State, Book } from '@/interfaces/store.interface';
-import { auth } from '@/firebase';
+import { auth, auth2 } from '@/firebase';
 import createPersistedState from 'vuex-persistedstate';
+import UserCredential = firebase.auth.UserCredential;
 
 Vue.use(Vuex);
 
 const initialState = () => ({
   books: [],
   email: '',
-  password: '',
   currentUser: {},
   token: '',
   currentTab: 0,
+  display: 'desktop',
 });
 
 export default new Vuex.Store({
@@ -22,7 +23,6 @@ export default new Vuex.Store({
   mutations: {
     LOGIN(state, payload) {
       state.email = payload.email;
-      state.password = payload.password;
     },
     LOGOUT(state: {
       [x: string]: string | string[] | Record<string, Book[]> | number;
@@ -33,6 +33,9 @@ export default new Vuex.Store({
       Object.keys(newState).forEach((key) => {
         state[key] = newState[key];
       });
+    },
+    UPDATE_DISPLAY_STYLE(state: State, payload: string): void {
+      state.display = payload;
     },
     SET_BOOKS(state: State, payload: Record<string, Book[]>[]): void {
       state.books = payload;
@@ -74,7 +77,7 @@ export default new Vuex.Store({
   },
   actions: {
     logout({ commit }): void {
-      commit('LOGOUT');
+      auth.signOut().then(() => commit('LOGOUT'));
     },
     async login({ commit }, payload: Record<string, string>): Promise<boolean> {
       return await auth
@@ -90,13 +93,90 @@ export default new Vuex.Store({
                 commit('SET_TOKEN', token);
                 commit('LOGIN', {
                   email: payload.email,
-                  password: payload.pass,
                 });
                 return true;
               } else {
                 return false;
               }
             });
+        });
+    },
+    async loginWithGoogle({
+      commit,
+    }): Promise<boolean | { success: boolean; message: string }> {
+      const provider = new auth2.GoogleAuthProvider();
+      return await auth.signInWithPopup(provider).then(async (result1) => {
+        const email = result1.user?.email;
+        return await axios
+          .post(`${server.baseURL}/auth/userCheck`, { user: email })
+          .then(async (result2) => {
+            if (result2.data.accepted) {
+              if (result1.user) {
+                const token = await result1.user?.getIdToken(true);
+                axios.defaults.headers.common['Authorization'] = token;
+                return await axios
+                  .post(`${server.baseURL}/auth/login`, { token: token })
+                  .then((result2) => {
+                    if (result2.data) {
+                      commit('SET_CURRENT_USER', result1.user);
+                      commit('SET_TOKEN', token);
+                      commit('LOGIN', {
+                        email: email,
+                      });
+                      return {
+                        success: true,
+                        message: 'Successfully added!',
+                      };
+                    } else return false;
+                  });
+              } else return false;
+            } else return false;
+          })
+          .catch(() => {
+            result1.user?.delete();
+            return {
+              success: false,
+              message: "Sorry, you're not allowed here.",
+            };
+          });
+      });
+    },
+    async loginWithGoogleRedirect(
+      { commit },
+      payload: UserCredential
+    ): Promise<boolean | { success: boolean; message: string }> {
+      const email = payload.user?.email;
+      return await axios
+        .post(`${server.baseURL}/auth/userCheck`, { user: email })
+        .then(async (result2) => {
+          if (result2.data.accepted) {
+            if (payload.user) {
+              const token = await payload.user?.getIdToken(true);
+              axios.defaults.headers.common['Authorization'] = token;
+              return await axios
+                .post(`${server.baseURL}/auth/login`, { token: token })
+                .then((result2) => {
+                  if (result2.data) {
+                    commit('SET_CURRENT_USER', payload.user);
+                    commit('SET_TOKEN', token);
+                    commit('LOGIN', {
+                      email: email,
+                    });
+                    return {
+                      success: true,
+                      message: 'Successfully added!',
+                    };
+                  } else return false;
+                });
+            } else return false;
+          } else return false;
+        })
+        .catch(() => {
+          payload.user?.delete();
+          return {
+            success: false,
+            message: "Sorry, you're not allowed here.",
+          };
         });
     },
     async createUser(
@@ -116,7 +196,6 @@ export default new Vuex.Store({
                 commit('SET_TOKEN', token);
                 commit('LOGIN', {
                   email: payload.email,
-                  password: payload.pass,
                 });
                 return { success: true, message: 'Successfully added!' };
               })
@@ -210,6 +289,7 @@ export default new Vuex.Store({
       Object.keys(state.currentUser).length !== 0,
     getToken: (state: State): string => state.token,
     getCurrentTab: (state: State): number => state.currentTab,
+    getDisplayStyle: (state: State): string => state.display,
   },
   modules: {},
   plugins: [

@@ -11,8 +11,8 @@ export interface Book {
 export interface State {
   books: Record<string, Book[]>[];
   email: string;
-  password: string;
   currentUser: Record<string, unknown>;
   token: string;
   currentTab: number;
+  display: string;
 }

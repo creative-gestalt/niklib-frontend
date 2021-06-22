@@ -1,14 +1,16 @@
 <template>
   <v-app>
     <v-app-bar id="nav" color="teal darken-2" app dark>
-      <v-toolbar-title class="black--text">Nick's Library</v-toolbar-title>
+      <v-toolbar-title class="black--text">
+        <v-img class="ml-3" width="35" src="@/assets/ga-logo-black.png"></v-img>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <div v-if="currentUser">
         <tooltip
           :click-action="openAdd"
           :position="{ bottom: true }"
           type="icon"
-          icon-name="mdi-book-plus"
+          icon-name="mdi-plus-box-outline"
           tooltip-text="Add New Book"
           color="black"
         ></tooltip>
@@ -16,7 +18,7 @@
           :click-action="home"
           :position="{ bottom: true }"
           type="icon"
-          icon-name="mdi-folder-home"
+          icon-name="mdi-book-multiple-outline"
           tooltip-text="Home"
           color="black"
         ></tooltip>
@@ -24,7 +26,7 @@
           :click-action="logout"
           :position="{ bottom: true }"
           type="icon"
-          icon-name="mdi-arrow-right-bold-box"
+          icon-name="mdi-exit-to-app"
           tooltip-text="Logout"
           color="black"
         ></tooltip>
@@ -64,6 +66,8 @@ export default Vue.extend({
   created() {
     axios.defaults.headers.common['Authorization'] =
       this.$store.getters['getToken'];
+    if (this.$vuetify.breakpoint.mobile)
+      this.$store.commit('UPDATE_DISPLAY_STYLE', 'mobile');
   },
   data: () => ({
     dialog: false,

@@ -2,7 +2,13 @@
   <div>
     <v-container fluid>
       <v-card>
-        <v-tabs :value="currentTab" @input="tab" :color="tabColor" centered>
+        <v-tabs
+          :value="currentTab"
+          @input="tab"
+          :color="tabColor"
+          show-arrows
+          centered
+        >
           <v-tab
             v-for="(author, i) in books"
             active-class="active"
@@ -14,7 +20,12 @@
           <v-tabs-slider :color="tabColor"></v-tabs-slider>
         </v-tabs>
         <v-tabs-items :value="currentTab" @input="tab">
-          <v-tab-item v-for="(author, i) in books" :key="i">
+          <v-tab-item
+            v-for="(author, i) in books"
+            :key="i"
+            transition="slide-x-transition"
+            reverse-transition="slide-x-transition"
+          >
             <div v-for="(books, i) in Object.values(author)" :key="i">
               <v-container fluid>
                 <v-row no-gutters>

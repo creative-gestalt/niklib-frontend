@@ -13,7 +13,7 @@
       </v-row>
     </v-container>
     <v-container>
-      <v-card>
+      <v-card :href="downloadURL">
         <v-img height="850" :src="imgURL"></v-img>
         <v-card-title class="teal--text">{{ book.title }}</v-card-title>
         <v-card-subtitle class="teal--text">
@@ -22,11 +22,6 @@
         <v-card-subtitle class="teal--text">
           Written by {{ book.author }}
         </v-card-subtitle>
-        <v-card-actions>
-          <v-btn class="black--text" color="teal darken-2" :href="downloadURL"
-            >Open</v-btn
-          >
-        </v-card-actions>
       </v-card>
     </v-container>
   </div>

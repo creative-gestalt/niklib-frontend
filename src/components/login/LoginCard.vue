@@ -28,8 +28,11 @@
       <v-card-actions>
         <v-btn class="black--text" @click="createUser" text>Sign Up</v-btn>
         <v-spacer></v-spacer>
+        <v-btn class="black--text" @click="loginWithGoogleAuth" icon>
+          <v-icon>mdi-google</v-icon>
+        </v-btn>
         <v-btn class="black--text" @click="loginWithFirebaseAuth" text>
-          Submit
+          Sign In
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -38,6 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { auth, auth2 } from '@/firebase';
 
 export default Vue.extend({
   name: 'LoginCard',
@@ -47,7 +51,42 @@ export default Vue.extend({
     error: '',
     overlay: false,
   }),
+  async created(): Promise<void> {
+    await auth.getRedirectResult().then((result) => {
+      if (result.user) {
+        this.overlay = true;
+        this.$store
+          .dispatch('loginWithGoogleRedirect', result)
+          .then(async (result) => {
+            if (result.success) {
+              await this.$router.push('/home');
+            } else {
+              this.error = result.message;
+            }
+          })
+          .catch((result) => (this.error = result.message));
+      }
+    });
+  },
   methods: {
+    async loginWithGoogleAuth(): Promise<void> {
+      this.overlay = true;
+      if (this.$vuetify.breakpoint.mobile) {
+        const provider = new auth2.GoogleAuthProvider();
+        await auth.signInWithRedirect(provider);
+      } else {
+        this.$store
+          .dispatch('loginWithGoogle')
+          .then(async (result) => {
+            if (result.success) {
+              await this.$router.push('/home');
+            } else {
+              this.error = result.message;
+            }
+          })
+          .catch((result) => (this.error = result.message));
+      }
+    },
     loginWithFirebaseAuth(): void {
       this.overlay = true;
       this.$store
