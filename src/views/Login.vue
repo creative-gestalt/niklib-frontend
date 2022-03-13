@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import LoginCard from '@/components/login/LoginCard.vue';
+import Vue from "vue";
+import LoginCard from "@/components/login/LoginCard.vue";
 
 export default Vue.extend({
-  name: 'Login',
+  name: "Login",
   components: {
     LoginCard,
   },

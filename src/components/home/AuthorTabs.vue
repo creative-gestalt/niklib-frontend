@@ -54,7 +54,7 @@
                         {{ book.title }}
                       </v-card-title>
                       <v-card-subtitle class="teal--text">
-                        {{ book.description | truncate(30, '...') }}
+                        {{ book.description | truncate(30, "...") }}
                       </v-card-subtitle>
                       <v-divider></v-divider>
                       <v-card-actions>
@@ -103,44 +103,44 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapActions, mapGetters } from 'vuex';
-import { server } from '@/utils/helper';
+import Vue from "vue";
+import { mapActions, mapGetters } from "vuex";
+import { server } from "@/utils/helper";
 
 export default Vue.extend({
-  name: 'AuthorTabs',
+  name: "AuthorTabs",
   data: () => ({
     tab: 0,
-    tabColor: 'teal',
+    tabColor: "teal",
     snackbar: false,
-    snackbarColor: '',
-    snackbarText: '',
+    snackbarColor: "",
+    snackbarText: "",
     timeout: 3000,
   }),
   async created() {
-    await this.$store.dispatch('getAllBooks');
+    await this.$store.dispatch("getAllBooks");
   },
   methods: {
-    ...mapActions({ deleteABook: 'deleteBook' }),
+    ...mapActions({ deleteABook: "deleteBook" }),
     getImage(img_name: string): string {
       return `${server.baseURL}/niklib/images/${img_name}?token=${this.token}`;
     },
     deleteBook(id: string, author: string): void {
       this.deleteABook({ _id: id, author: author }).then(() => {
         this.snackbar = true;
-        this.snackbarColor = 'teal darken-2';
-        this.snackbarText = 'Successfully deleted';
+        this.snackbarColor = "teal darken-2";
+        this.snackbarText = "Successfully deleted";
       });
     },
     updateTabState(index: number): void {
-      this.$store.commit('UPDATE_CURRENT_TAB', index);
+      this.$store.commit("UPDATE_CURRENT_TAB", index);
     },
   },
   computed: {
     ...mapGetters({
-      books: 'getBooks',
-      token: 'getToken',
-      currentTab: 'getCurrentTab',
+      books: "getBooks",
+      token: "getToken",
+      currentTab: "getCurrentTab",
     }),
   },
 });
@@ -153,7 +153,6 @@ $tab-text-color: teal;
   color: $tab-text-color;
 }
 .card-title {
-  white-space: pre-wrap;
   word-break: keep-all;
 }
 </style>

@@ -13,33 +13,35 @@
       </v-row>
     </v-container>
     <v-container>
-      <v-card :href="downloadURL">
-        <v-img height="850" :src="imgURL"></v-img>
-        <v-card-title class="teal--text">{{ book.title }}</v-card-title>
-        <v-card-subtitle class="teal--text">
-          {{ book.description }}
-        </v-card-subtitle>
-        <v-card-subtitle class="teal--text">
-          Written by {{ book.author }}
-        </v-card-subtitle>
-      </v-card>
+      <v-row class="ma-auto">
+        <v-card :href="downloadURL" width="450" class="ma-auto">
+          <v-img height="550" :src="imgURL"></v-img>
+          <v-card-title class="teal--text">{{ book.title }}</v-card-title>
+          <v-card-subtitle class="teal--text">
+            {{ book.description }}
+          </v-card-subtitle>
+          <v-card-subtitle class="teal--text">
+            Written by {{ book.author }}
+          </v-card-subtitle>
+        </v-card>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { server } from '@/utils/helper';
-import { mapActions, mapGetters } from 'vuex';
-import { Book } from '@/interfaces/book.interface';
+import Vue from "vue";
+import { server } from "@/utils/helper";
+import { mapActions, mapGetters } from "vuex";
+import { Book } from "@/interfaces/book.interface";
 
 export default Vue.extend({
-  name: 'Book',
+  name: "Book",
   data: () => ({
-    id: '',
+    id: "",
     book: {} as Book,
-    downloadURL: '',
-    imgURL: '',
+    downloadURL: "",
+    imgURL: "",
   }),
   async created() {
     this.id = String(this.$route.params.id);
@@ -48,13 +50,13 @@ export default Vue.extend({
     this.imgURL = `${server.baseURL}/niklib/images/${this.book.img_name}?token=${this.getToken}`;
   },
   methods: {
-    ...mapActions({ getABook: 'getBook', downloadABook: 'getFile' }),
+    ...mapActions({ getABook: "getBook", downloadABook: "getFile" }),
     navigate() {
       this.$router.go(-1);
     },
   },
   computed: {
-    ...mapGetters(['getToken']),
+    ...mapGetters(["getToken"]),
   },
 });
 </script>

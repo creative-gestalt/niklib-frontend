@@ -1,21 +1,21 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import axios from 'axios';
-import { server } from '@/utils/helper';
-import { State, Book } from '@/interfaces/store.interface';
-import { auth, auth2 } from '@/firebase';
-import createPersistedState from 'vuex-persistedstate';
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
+import { server } from "@/utils/helper";
+import { State, Book } from "@/interfaces/store.interface";
+import { auth, auth2 } from "@/firebase";
+import createPersistedState from "vuex-persistedstate";
 import UserCredential = firebase.auth.UserCredential;
 
 Vue.use(Vuex);
 
 const initialState = () => ({
   books: [],
-  email: '',
+  email: "",
   currentUser: {},
-  token: '',
+  token: "",
   currentTab: 0,
-  display: 'desktop',
+  display: "desktop",
 });
 
 export default new Vuex.Store({
@@ -77,21 +77,21 @@ export default new Vuex.Store({
   },
   actions: {
     logout({ commit }): void {
-      auth.signOut().then(() => commit('LOGOUT'));
+      auth.signOut().then(() => commit("LOGOUT"));
     },
     async login({ commit }, payload: Record<string, string>): Promise<boolean> {
       return await auth
         .signInWithEmailAndPassword(payload.email, payload.pass)
         .then(async () => {
           const token = await auth.currentUser?.getIdToken(true);
-          axios.defaults.headers.common['Authorization'] = token;
+          axios.defaults.headers.common["Authorization"] = token;
           return await axios
             .post(`${server.baseURL}/auth/login`, { token: token })
             .then((result) => {
               if (result.data) {
-                commit('SET_CURRENT_USER', auth.currentUser);
-                commit('SET_TOKEN', token);
-                commit('LOGIN', {
+                commit("SET_CURRENT_USER", auth.currentUser);
+                commit("SET_TOKEN", token);
+                commit("LOGIN", {
                   email: payload.email,
                 });
                 return true;
@@ -113,19 +113,19 @@ export default new Vuex.Store({
             if (result2.data.accepted) {
               if (result1.user) {
                 const token = await result1.user?.getIdToken(true);
-                axios.defaults.headers.common['Authorization'] = token;
+                axios.defaults.headers.common["Authorization"] = token;
                 return await axios
                   .post(`${server.baseURL}/auth/login`, { token: token })
                   .then((result2) => {
                     if (result2.data) {
-                      commit('SET_CURRENT_USER', result1.user);
-                      commit('SET_TOKEN', token);
-                      commit('LOGIN', {
+                      commit("SET_CURRENT_USER", result1.user);
+                      commit("SET_TOKEN", token);
+                      commit("LOGIN", {
                         email: email,
                       });
                       return {
                         success: true,
-                        message: 'Successfully added!',
+                        message: "Successfully added!",
                       };
                     } else return false;
                   });
@@ -152,19 +152,19 @@ export default new Vuex.Store({
           if (result2.data.accepted) {
             if (payload.user) {
               const token = await payload.user?.getIdToken(true);
-              axios.defaults.headers.common['Authorization'] = token;
+              axios.defaults.headers.common["Authorization"] = token;
               return await axios
                 .post(`${server.baseURL}/auth/login`, { token: token })
                 .then((result2) => {
                   if (result2.data) {
-                    commit('SET_CURRENT_USER', payload.user);
-                    commit('SET_TOKEN', token);
-                    commit('LOGIN', {
+                    commit("SET_CURRENT_USER", payload.user);
+                    commit("SET_TOKEN", token);
+                    commit("LOGIN", {
                       email: email,
                     });
                     return {
                       success: true,
-                      message: 'Successfully added!',
+                      message: "Successfully added!",
                     };
                   } else return false;
                 });
@@ -191,13 +191,13 @@ export default new Vuex.Store({
               .createUserWithEmailAndPassword(payload.email, payload.pass)
               .then(async (userCredential) => {
                 const token = await auth.currentUser?.getIdToken(true);
-                axios.defaults.headers.common['Authorization'] = token;
-                commit('SET_CURRENT_USER', userCredential.user);
-                commit('SET_TOKEN', token);
-                commit('LOGIN', {
+                axios.defaults.headers.common["Authorization"] = token;
+                commit("SET_CURRENT_USER", userCredential.user);
+                commit("SET_TOKEN", token);
+                commit("LOGIN", {
                   email: payload.email,
                 });
-                return { success: true, message: 'Successfully added!' };
+                return { success: true, message: "Successfully added!" };
               })
               .catch((e) => ({ success: false, message: e }));
           }
@@ -210,7 +210,7 @@ export default new Vuex.Store({
     async getAllBooks({ commit }): Promise<void> {
       await axios
         .get(`${server.baseURL}/niklib/books`)
-        .then((data) => commit('SET_BOOKS', data.data));
+        .then((data) => commit("SET_BOOKS", data.data));
     },
     async getBook({ commit }, payload: Book): Promise<void> {
       return await axios
@@ -238,7 +238,7 @@ export default new Vuex.Store({
       await axios
         .post(`${server.baseURL}/niklib/book`, payload.data)
         .then((data) => {
-          commit('ADD_BOOK', data.data.book);
+          commit("ADD_BOOK", data.data.book);
         });
     },
     async editBook(
@@ -259,7 +259,7 @@ export default new Vuex.Store({
       await axios
         .delete(`${server.baseURL}/niklib/delete?bookID=${payload._id}`)
         .then((data) => {
-          let currentAuthor = '';
+          let currentAuthor = "";
           const newList = [] as Book[];
           state.books.map((author: Record<string, Book[]>) => {
             currentAuthor = Object.keys(author)[0];
@@ -271,7 +271,7 @@ export default new Vuex.Store({
               }
             }
           });
-          commit('SET_AUTHOR_BOOKS', {
+          commit("SET_AUTHOR_BOOKS", {
             author: currentAuthor,
             newList: newList,
           });

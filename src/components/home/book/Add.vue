@@ -61,36 +61,36 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapActions } from 'vuex';
-import * as path from 'path';
+import Vue from "vue";
+import { mapActions } from "vuex";
+import * as path from "path";
 
 export default Vue.extend({
-  name: 'AddBook',
+  name: "AddBook",
   props: {
     dialog: Boolean,
   },
   data: () => ({
     valid: false,
-    title: '',
-    description: '',
-    author: '',
-    date_posted: '',
+    title: "",
+    description: "",
+    author: "",
+    date_posted: "",
     loading: false,
     file: null as unknown as File,
     img: null as unknown as File,
-    noEmptyRule: [(v: string) => !!v || 'This field is required'],
+    noEmptyRule: [(v: string) => !!v || "This field is required"],
     fileRule: [] as unknown[],
   }),
   methods: {
-    ...mapActions({ addBookToServer: 'addBookToServer' }),
+    ...mapActions({ addBookToServer: "addBookToServer" }),
     async addBook() {
       const fileExt = path.extname(this.file.name);
       const imgExt = path.extname(this.img.name);
       if (!fileExt.match(/\.(pdf|epub)$/) || !imgExt.match(/\.(png|jpg)$/)) {
-        this.$emit('openSnackbar', {
-          text: 'Files must be valid type',
-          color: 'red darken-4',
+        this.$emit("openSnackbar", {
+          text: "Files must be valid type",
+          color: "red darken-4",
           show: true,
         });
         return;
@@ -105,16 +105,16 @@ export default Vue.extend({
         author: this.author,
         date_posted: this.date_posted,
       };
-      file.append('file', this.file);
-      img.append('file', this.img);
+      file.append("file", this.file);
+      img.append("file", this.img);
       await this.addBookToServer({ file: file, img: img, data: postData })
         .then(() => {
           setTimeout(() => (this.loading = false), 1000);
           setTimeout(() => {
             this.closeDialog();
-            this.$emit('openSnackbar', {
-              text: 'Book Added Successfully',
-              color: 'teal darken-2',
+            this.$emit("openSnackbar", {
+              text: "Book Added Successfully",
+              color: "teal darken-2",
               show: true,
             });
           }, 1000);
@@ -125,12 +125,12 @@ export default Vue.extend({
         });
     },
     closeDialog(): void {
-      this.$emit('closeDialog');
+      this.$emit("closeDialog");
       this.resetFields();
       this.resetValidation();
     },
     validate(): void {
-      this.fileRule = [(v: string) => !!v || 'This field is required'];
+      this.fileRule = [(v: string) => !!v || "This field is required"];
       this.valid = (
         this.$refs.addForm as Vue & {
           validate: () => boolean;
@@ -144,10 +144,10 @@ export default Vue.extend({
       (this.$refs.addForm as Vue & { reset: () => boolean }).reset();
     },
     resetFields(): void {
-      this.title = '';
-      this.description = '';
-      this.author = '';
-      this.date_posted = '';
+      this.title = "";
+      this.description = "";
+      this.author = "";
+      this.date_posted = "";
       this.file = null as unknown as File;
       this.img = null as unknown as File;
       this.fileRule = [];

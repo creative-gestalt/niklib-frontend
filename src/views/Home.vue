@@ -19,24 +19,24 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapGetters } from 'vuex';
-import AuthorTabs from '@/components/home/AuthorTabs.vue';
-import AuthorList from '@/components/home/AuthorList.vue';
+import Vue from "vue";
+import { mapGetters } from "vuex";
+import AuthorTabs from "@/components/home/AuthorTabs.vue";
+import AuthorList from "@/components/home/AuthorList.vue";
 
 export default Vue.extend({
-  name: 'Home',
+  name: "Home",
   components: { AuthorList, AuthorTabs },
   data: () => ({}),
   methods: {
     updateDisplayStyle(value: string): void {
-      if (value === 'mobile')
-        this.$store.commit('UPDATE_DISPLAY_STYLE', 'mobile');
-      else this.$store.commit('UPDATE_DISPLAY_STYLE', 'desktop');
+      if (value === "mobile")
+        this.$store.commit("UPDATE_DISPLAY_STYLE", "mobile");
+      else this.$store.commit("UPDATE_DISPLAY_STYLE", "desktop");
     },
   },
   computed: {
-    ...mapGetters(['getDisplayStyle']),
+    ...mapGetters(["getDisplayStyle"]),
   },
 });
 </script>

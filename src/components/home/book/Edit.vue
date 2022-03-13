@@ -61,21 +61,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapActions } from 'vuex';
-import { Book } from '@/interfaces/book.interface';
+import Vue from "vue";
+import { mapActions } from "vuex";
+import { Book } from "@/interfaces/book.interface";
 
 export default Vue.extend({
-  name: 'EditBook',
+  name: "EditBook",
   data: () => ({
-    id: '',
+    id: "",
     book: {} as Book,
     valid: false,
     file: null as unknown as File,
     img: null as unknown as File,
     old_file: null as unknown as File,
     old_img: null as unknown as File,
-    noEmptyRule: [(v: string) => !!v || 'This field is required'],
+    noEmptyRule: [(v: string) => !!v || "This field is required"],
   }),
   async created() {
     this.id = String(this.$route.params.id);
@@ -87,11 +87,11 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions({
-      getFile: 'getFile',
-      getBook: 'getBook',
-      addFile: 'addFile',
-      deleteFile: 'deleteFile',
-      editABook: 'editBook',
+      getFile: "getFile",
+      getBook: "getBook",
+      addFile: "addFile",
+      deleteFile: "deleteFile",
+      editABook: "editBook",
     }),
     async editBook(): Promise<void> {
       const file = new FormData();
@@ -104,16 +104,16 @@ export default Vue.extend({
       };
       if (this.file !== this.old_file && this.file.size > 0) {
         await this.deleteFile(this.book.filename);
-        file.append('file', this.file);
+        file.append("file", this.file);
         postData.filename = await this.addFile(file);
       }
       if (this.img !== this.old_img && this.img.size > 0) {
         await this.deleteFile(this.book.img_name);
-        img.append('file', this.img);
+        img.append("file", this.img);
         postData.img_name = await this.addFile(img);
       }
       await this.editABook({ _id: this.id, data: postData }).then(() =>
-        this.$router.push('/home')
+        this.$router.push("/home")
       );
     },
     validate(): void {

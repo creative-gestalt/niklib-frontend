@@ -10,7 +10,7 @@
         :icon="type === 'icon'"
       >
         <v-icon v-if="type === 'icon'" :color="color">{{ iconName }}</v-icon>
-        {{ type === 'text' ? btnText : '' }}
+        {{ type === "text" ? btnText : "" }}
       </v-btn>
     </template>
     <span>{{ tooltipText }}</span>
@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
-  name: 'Tooltip',
+  name: "Tooltip",
   props: {
     clickAction: Function,
     type: String,
