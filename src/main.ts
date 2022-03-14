@@ -10,7 +10,7 @@ Vue.filter(
   "truncate",
   function (text: string | never[], stop: number, clamp: string) {
     return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
-  }
+  },
 );
 
 new Vue({

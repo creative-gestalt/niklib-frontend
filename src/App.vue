@@ -89,13 +89,7 @@ export default Vue.extend({
       this.snackbarText = String(props.text);
     },
     logout(): void {
-      auth
-        .signOut()
-        .then(() => {
-          this.$store.dispatch("logout");
-          this.$router.push("/login");
-        })
-        .catch((error) => console.log(error));
+      this.$store.dispatch("logout").then(() => this.$router.push("/login"));
     },
     home(): void {
       if (this.$route.path !== "/home") this.$router.push("/home");

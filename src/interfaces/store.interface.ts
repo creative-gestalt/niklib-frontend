@@ -15,4 +15,5 @@ export interface State {
   token: string;
   currentTab: number;
   display: string;
+  sessionTime: number;
 }

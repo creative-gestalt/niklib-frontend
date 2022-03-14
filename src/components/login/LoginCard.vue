@@ -42,6 +42,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { auth, auth2 } from "@/firebase";
+import { getAuth } from "firebase/auth";
 
 export default Vue.extend({
   name: "LoginCard",

@@ -45,7 +45,11 @@ export default Vue.extend({
   }),
   async created() {
     this.id = String(this.$route.params.id);
-    this.book = await this.getABook({ _id: this.id });
+    this.book = await this.getABook({ _id: this.id }).catch(() => {
+      alert("Session Expired. Log back in to continue.");
+      this.$store.dispatch("logout");
+      this.$router.replace("/login");
+    });
     this.downloadURL = `${server.baseURL}/niklib/files/download/${this.book.filename}?token=${this.getToken}`;
     this.imgURL = `${server.baseURL}/niklib/images/${this.book.img_name}?token=${this.getToken}`;
   },

@@ -113,7 +113,7 @@ export default Vue.extend({
         postData.img_name = await this.addFile(img);
       }
       await this.editABook({ _id: this.id, data: postData }).then(() =>
-        this.$router.push("/home")
+        this.$router.push("/home"),
       );
     },
     validate(): void {
