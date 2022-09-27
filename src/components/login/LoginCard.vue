@@ -31,7 +31,12 @@
         <v-btn class="black--text" icon @click="loginWithGoogleAuth">
           <v-icon>mdi-google</v-icon>
         </v-btn>
-        <v-btn class="black--text" text @click="loginWithFirebaseAuth">
+        <v-btn
+          type="submit"
+          class="black--text"
+          text
+          @click="loginWithFirebaseAuth"
+        >
           Sign In
         </v-btn>
       </v-card-actions>
