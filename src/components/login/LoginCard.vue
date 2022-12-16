@@ -9,26 +9,39 @@
         <v-form value>
           <v-text-field
             v-model="email"
-            dark
             placeholder="Email"
             type="email"
+            hint="Email"
+            outlined
+            dense
+            dark
           ></v-text-field>
           <v-text-field
-            v-model="password"
-            clearable
-            dark
-            placeholder="Password"
+            v-model="apiKey"
+            placeholder="Api Key"
             type="password"
+            hint="Api Key"
             @keyup.enter="loginWithFirebaseAuth"
+            clearable
+            outlined
+            dense
+            dark
           ></v-text-field>
         </v-form>
         <p style="color: red">{{ error }}</p>
       </v-container>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn class="black--text" text @click="createUser">Sign Up</v-btn>
+        <v-btn class="black--text" text @click="showDialogForSignUp">
+          Sign Up
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-btn class="black--text" icon @click="loginWithGoogleAuth">
+        <v-btn
+          v-if="false"
+          class="black--text"
+          icon
+          @click="loginWithGoogleAuth"
+        >
           <v-icon>mdi-google</v-icon>
         </v-btn>
         <v-btn
@@ -41,6 +54,16 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <v-dialog v-model="dialog" max-width="450">
+      <v-card>
+        <v-card-title class="justify-center">New User</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text class="pt-5">
+          You'll need an api key to use this service. If you do not know the
+          owner of this website, you cannot have access.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -53,9 +76,10 @@ export default Vue.extend({
   name: "LoginCard",
   data: () => ({
     email: "",
-    password: "",
+    apiKey: "",
     error: "",
     overlay: false,
+    dialog: false,
   }),
   async created(): Promise<void> {
     await auth.getRedirectResult().then((result) => {
@@ -96,7 +120,7 @@ export default Vue.extend({
     loginWithFirebaseAuth(): void {
       this.overlay = true;
       this.$store
-        .dispatch("login", { email: this.email, pass: this.password })
+        .dispatch("login", { email: this.email, pass: this.apiKey })
         .then(async (result) => {
           if (result) {
             await this.$router.push("/home");
@@ -104,18 +128,8 @@ export default Vue.extend({
         })
         .catch((e) => (this.error = "An error occurred. Please try again."));
     },
-    createUser(): void {
-      this.overlay = true;
-      this.$store
-        .dispatch("createUser", { email: this.email, pass: this.password })
-        .then(async (result) => {
-          if (result.success) {
-            await this.$router.push("/home");
-          } else {
-            this.error = result.message;
-          }
-        })
-        .catch((result) => (this.error = result.message));
+    showDialogForSignUp(): void {
+      this.dialog = true;
     },
   },
   watch: {
